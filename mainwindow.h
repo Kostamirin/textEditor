@@ -14,8 +14,9 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(const QString &title, QWidget *parent = nullptr);
     ~MainWindow() override;
+    QString m_title;
 
 private slots:
 
