@@ -83,7 +83,15 @@
     <addaction name="actionOpen_file"/>
     <addaction name="actionOpen_folder"/>
    </widget>
+   <widget class="QMenu" name="menuWindow">
+    <property name="title">
+     <string>Window</string>
+    </property>
+    <addaction name="actionCreate_New"/>
+    <addaction name="actionClose"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuWindow"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionSave">
@@ -107,6 +115,19 @@
   <action name="actionOpen_folder">
    <property name="text">
     <string>Open folder</string>
+   </property>
+  </action>
+  <action name="actionCreate_New">
+   <property name="text">
+    <string>Create New</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="text">
+    <string>Close</string>
+   </property>
+   <property name="toolTip">
+    <string>Close</string>
    </property>
   </action>
  </widget>
