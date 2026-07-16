@@ -13,6 +13,7 @@ MainWindow::MainWindow(const QString &title, QWidget *parent)
 {
     ui->setupUi(this);
     this->setWindowTitle("Enter the text");
+    this->opened_tabs.push_back(Tabs_button("first opened"));
 }
 
 MainWindow::~MainWindow()
@@ -55,8 +56,8 @@ bool MainWindow::saveToFile(const QString &filePath)
     QFileInfo fileInfo(File_path);
     this->setWindowTitle(File_path);
     ui->statusbar->showMessage("File saved");
-    ui->pushButton_2->setText(fileInfo.baseName());
-    ui->pushButton_2->setStyleSheet("background-color: rgb(0, 111, 0);");
+    ui->pushButton_File->setText(fileInfo.baseName());
+    ui->pushButton_File->setStyleSheet("background-color: rgb(0, 111, 0);");
     qDebug() << "File saved:" << File_path;
     return true;
 }
@@ -82,7 +83,6 @@ void MainWindow::on_actionSave_as_triggered()
         qDebug() << "Save cancelled by user";
         return;
     }
-
     saveToFile(filePath);
 }
 
@@ -120,13 +120,13 @@ void MainWindow::on_actionOpen_file_triggered()
     this->setWindowTitle(File_path);
     ui->statusbar->showMessage("File loaded");
     QFileInfo fileInfo(File_path);
-    ui->pushButton_2->setText(fileInfo.baseName());
-    ui->pushButton_2->setStyleSheet("background-color: rgb(0, 111, 0);");
+    ui->pushButton_File->setText(fileInfo.baseName());
+    ui->pushButton_File->setStyleSheet("background-color: rgb(0, 111, 0);");
 }
 
 void MainWindow::on_textEdit_textChanged()
 {
-    ui->pushButton_2->setStyleSheet("background-color:rgb(148, 110, 6);");
+    ui->pushButton_File->setStyleSheet("background-color:rgb(148, 110, 6);");
 }
 
 void MainWindow::on_actionCreate_New_triggered()
@@ -141,3 +141,15 @@ void MainWindow::on_actionClose_triggered()
     qDebug() << "Window named:" << this->m_title << " --CLOSED";
     this->close();
 }
+
+void MainWindow::on_pushButton_Add_clicked()
+{
+    //this.textEdit =
+}
+
+
+void MainWindow::on_pushButton_File_clicked()
+{
+    //if(this.currentFile !=  )
+}
+

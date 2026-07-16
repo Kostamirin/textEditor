@@ -18,7 +18,7 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QPushButton" name="pushButton_2">
+       <widget class="QPushButton" name="pushButton_File">
         <property name="styleSheet">
          <string notr="true">background-color:rgb(148, 110, 6);</string>
         </property>
@@ -28,7 +28,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_3">
+       <widget class="QPushButton" name="pushButton_Add">
         <property name="styleSheet">
          <string notr="true"/>
         </property>
