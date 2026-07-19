@@ -1,5 +1,5 @@
-# textEditor
-The typical text editor without any suspicious functions
+# Zubr
+Zubr is text editor writen on QT framework multiple tab support
 
 # How to use
 To use this text editor, download the files ... 
