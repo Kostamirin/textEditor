@@ -49,7 +49,7 @@ private:
 
     int num_of_opened_windows = 1;
     int num_of_opened_tabs = 1;
-
+    std::vector<bool> List_saved_files;
     QString File_path = "";
 };
 

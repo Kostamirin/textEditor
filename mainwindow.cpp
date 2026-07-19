@@ -13,7 +13,7 @@ MainWindow::MainWindow(const QString &title, QWidget *parent)
 {
     ui->setupUi(this);
     this->setWindowTitle("Enter the text");
-
+    List_saved_files.push_back(false);
 
 }
 
@@ -22,9 +22,9 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-bool MainWindow::saveToFile(const QString &filePath) //проблемма с сохранением при сохранении текста с 1 вкладки и переходе в другую и повторном сохранении не появляется окно сохранения и текст перезаписывается в тотже файл
+bool MainWindow::saveToFile(const QString &filePath)
 {
-     QString text;
+    QString text;
     int tab_index = ui->tabWidget->currentIndex();
     QWidget *curet_tab = ui->tabWidget->widget(tab_index);
     if(curet_tab)
@@ -81,6 +81,9 @@ bool MainWindow::saveToFile(const QString &filePath) //проблемма с с�
     QFileInfo fileInfo(File_path);
     this->setWindowTitle(File_path);
     ui->statusbar->showMessage("File saved");
+    List_saved_files[tab_index] = true;
+
+    ui->tabWidget->setTabText(ui->tabWidget->currentIndex(),fileInfo.fileName());
     //здесь код для изменения заголовка и цвета выбраной страници
 
     qDebug() << "File saved:" << File_path;
@@ -89,7 +92,7 @@ bool MainWindow::saveToFile(const QString &filePath) //проблемма с с�
 
 void MainWindow::on_actionSave_triggered()
 {
-    if (File_path.isEmpty()) {
+    if (File_path.isEmpty()||List_saved_files[ui->tabWidget->currentIndex()] == false) {
         on_actionSave_as_triggered();
     } else {
         saveToFile(File_path);
@@ -129,6 +132,7 @@ void MainWindow::on_actionOpen_file_triggered()
     }
 
     QTextStream stream(&file);
+    QFileInfo file_info(file);
     stream.setEncoding(QStringConverter::Utf8);
     const QString text = stream.readAll();
     file.close();
@@ -139,7 +143,30 @@ void MainWindow::on_actionOpen_file_triggered()
         return;
     }
 
-    ui->textEdit->setText(text);
+    int index = ui->tabWidget->currentIndex();
+    QWidget *table = ui->tabWidget->widget(index);
+    if(table)
+    {
+        QTextEdit *text_from_table = table->findChild<QTextEdit*>();
+        if(text_from_table)
+        {
+            text_from_table->setText(text);
+            List_saved_files[ui->tabWidget->currentIndex()] = true;
+            ui->tabWidget->setTabText(ui->tabWidget->currentIndex(),file_info.fileName());
+        }
+        else
+        {
+            QMessageBox::critical(this, "Error", QString("Can't find TextEdit"));
+            qDebug() << "Can't find TextEdit";
+            return ;
+        }
+    }
+    else
+    {
+        QMessageBox::critical(this, "Error", QString("Can't find Table"));
+        qDebug() << "Can't find Table";
+        return;
+    }
 
     File_path = filePath;
     this->setWindowTitle(File_path);
@@ -187,8 +214,10 @@ void MainWindow::on_tabWidget_currentChanged(int index)
         QVBoxLayout *new_loaut = new QVBoxLayout(new_tab);
         new_loaut->addWidget(new_text_box);
         new_tab->setLayout(new_loaut);
-        ui->tabWidget->insertTab(ui->tabWidget->count() - 2,new_tab,"Unsaved file");
+        ui->tabWidget->insertTab(ui->tabWidget->count() - 1,new_tab,"Unsaved file");
         ui->tabWidget->setCurrentIndex(ui->tabWidget->count()-2);
+        num_of_opened_tabs += 1;
+        List_saved_files.push_back(false);
     }
 }
 
