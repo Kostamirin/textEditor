@@ -20,7 +20,15 @@ MainWindow::MainWindow(const QString &title, QWidget *parent)
     ui->treeView->setModel(model);
     ui->treeView->setRootIndex(model->index(QDir::homePath()));
 }
-
+///
+///                     Что нужно добавить:
+///     1.Ошибки в открытии файла из под левого меню (256-268)
+///     2.Добавить настройки шрифта и размера текста
+///     3.Ввести список txt схожих файлов которые откроются (под вопросом)
+///     4 опц. Добавить перевод на русский
+///     5.Реализовать скрытие левого меню
+///
+/// from perforator-coder: Это уже хорошый блокнот но требующий улучшений и больше тестировки. Я не уверен есть ли ещё баги.
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -272,9 +280,26 @@ void MainWindow::on_treeView_doubleClicked(const QModelIndex &index) //не до
     QString text_from_tree = file.readAll();
     file.close();
     QFileInfo file_info(file);
-    if(List_saved_files[index_tab]= false)
+    if(List_saved_files[index_tab] == false)
     {
-        // вопрос на открытие новой вкладки или запись в уже открытую
+        QMessageBox::StandardButton ansver;
+        ansver = QMessageBox::question(this,"Open file problem","Current tab is not saved.\nYou want open new tab or open file in current?",QMessageBox::Yes|QMessageBox::No);
+        if(ansver==QMessageBox::Yes)
+        {
+            on_tabWidget_currentChanged(ui->tabWidget->count());
+            qDebug() << "Selected yes, open file in new  tab";
+        }
+        else if (ansver==QMessageBox::No)
+        {
+           qDebug() << "Selected no, open file in current tab";
+        }
+        else
+        {
+            qDebug() << "answer not geted show message about error";
+            QMessageBox::critical(this, "Error", QString("Can't find answer"));
+            return;
+        }
+
     }
 
     QWidget *curet_tab = ui->tabWidget->widget(index_tab);// запись текста в текущю вкладку
@@ -307,14 +332,38 @@ void MainWindow::on_treeView_doubleClicked(const QModelIndex &index) //не до
 
 void MainWindow::on_actionCreate_new_tab_triggered()
 {
-
+    on_tabWidget_currentChanged(ui->tabWidget->count() - 1);
+    return;
 }
 
 
-void MainWindow::on_actionClose_tab_triggered()//не дописано не удоляет вкладку
+void MainWindow::on_actionClose_tab_triggered()
 {
-    int index = ui->tabWidget->currentIndex();//сделать проверку что файл сохранен и вывести окно с вопросом BUG
 
+    QMessageBox::StandardButtons answer;
+
+    int index = ui->tabWidget->currentIndex();
+
+    if(List_saved_files[index] == false)
+    {
+        answer = QMessageBox::question(this,"Close tab problem","Current tab is not saved.\n You want save and close or close?",QMessageBox::Yes|QMessageBox::No);
+        if(answer == QMessageBox::Yes)
+        {
+            on_actionSave_triggered();
+            qDebug() << "Selected yes, saveing file";
+        }else if (answer == QMessageBox::No)
+        {
+           qDebug() << "Selected no, close tab";
+        }
+        else
+        {
+            qDebug() << "answer is null show error";
+            QMessageBox::critical(this, "Error", QString("Can't find answer"));
+            return;
+        }
+    }
+
+    ui->tabWidget->blockSignals(true);
     List_saved_files.erase(List_saved_files.begin() + index);
 
 
@@ -324,6 +373,11 @@ void MainWindow::on_actionClose_tab_triggered()//не дописано не уд
     this->setFocus();
     ui->tabWidget->update();
     ui->tabWidget->repaint();
+    ui->tabWidget->blockSignals(false);
+    if(ui->tabWidget->count() == 1)
+    {
+        on_tabWidget_currentChanged(index);
+    }
 
 
 }
